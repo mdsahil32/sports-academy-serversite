@@ -60,8 +60,14 @@ async function run() {
 
     app.post('/myclass', async(req, res) =>{
       const addClass = req.body;
-      // console.log(addClass);
+      console.log(addClass);
       const result = await myClassCollection.insertOne(addClass)
+      res.send(result)
+    })
+    app.delete('/myclass/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await myClassCollection.deleteOne(query)
       res.send(result)
     })
     
