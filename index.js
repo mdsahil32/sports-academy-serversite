@@ -30,47 +30,55 @@ async function run() {
     const instructorsCollection = client.db('sportsAcademy').collection('instructors')
     const myClassCollection = client.db('sportsAcademy').collection('myClass')
 
-    app.get('/classes', async(req, res) => {
-        const result = await classesCollection.find().toArray()
-        res.send(result)
+    app.get('/classes', async (req, res) => {
+      const result = await classesCollection.find().toArray()
+      res.send(result)
     })
-    app.get('/classes/:id', async(req, res) => {
+    app.get('/classes/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await classesCollection.findOne(query)
       res.send(result)
     })
-    app.get('/instructors', async(req, res) =>{
-        const result = await instructorsCollection.find().toArray()
-        res.send(result)
+    app.get('/instructors', async (req, res) => {
+      const result = await instructorsCollection.find().toArray()
+      res.send(result)
     })
 
     // my selected class ----------- 
-    app.get('/myclass', async(req, res) =>{
+    app.get('/myclass', async (req, res) => {
       const cursor = myClassCollection.find()
       const result = await cursor.toArray()
       res.send(result)
     })
-    app.get('/myclass/:id', async(req, res) =>{
+   
+    app.get('/myclass/:email', async (req, res) => {
+      const result = await myClassCollection.find({
+        user: req.params.email}).toArray()
+        res.send(result)
+    })
+
+
+    app.get('/myclass/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await myClassCollection.findOne(query)
       res.send(result)
     })
 
-    app.post('/myclass', async(req, res) =>{
+    app.post('/myclass', async (req, res) => {
       const addClass = req.body;
       console.log(addClass);
       const result = await myClassCollection.insertOne(addClass)
       res.send(result)
     })
-    app.delete('/myclass/:id', async(req, res) =>{
+    app.delete('/myclass/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await myClassCollection.deleteOne(query)
       res.send(result)
     })
-    
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
@@ -85,8 +93,8 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('sports academy is running')
+  res.send('sports academy is running')
 })
-app.listen(port, () =>{
-    console.log(`running on port is ${port}`);
+app.listen(port, () => {
+  console.log(`running on port is ${port}`);
 })
