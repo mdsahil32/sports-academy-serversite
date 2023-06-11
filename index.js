@@ -90,32 +90,62 @@ async function run() {
    
     app.get('/users/admin/:email', verifyJWT, async (req, res) => {
       const email = req.params.email;
-
       if (req.decoded.email !== email) {
         res.send({ admin: false })
       }
-
       const query = { email: email }
       const user = await usersCollection.findOne(query);
       const result = { admin: user?.role === 'admin' }
       res.send(result);
     })
-
+    // make admin 
     app.patch('/users/admin/:id', async (req, res) => {
       const id = req.params.id;
-      console.log(id);
+      // console.log(id);
       const filter = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: {
           role: 'admin'
         },
       };
-
       const result = await usersCollection.updateOne(filter, updateDoc);
       res.send(result);
-
     })
-
+    // make instructor 
+    app.get('/users/instructor/:email', verifyJWT, async (req, res) => {
+      try {
+        const { email } = req.params;
+    
+        if (req.decoded.email !== email) {
+          return res.send({ instructor: false });
+        }
+    
+        const query = { email };
+        const user = await usersCollection.findOne(query);
+        const result = { instructor: user?.role === 'instructor' };
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: 'An error occurred while retrieving instructor information.' });
+      }
+    });
+    
+    app.patch('/users/instructor/:id', async (req, res) => {
+      try {
+        const { id } = req.params;
+    
+        const filter = { _id: new ObjectId(id) };
+        const updateDoc = {
+          $set: {
+            role: 'instructor',
+          },
+        };
+    
+        const result = await usersCollection.updateOne(filter, updateDoc);
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: 'An error occurred while updating user role.' });
+      }
+    });
 
     app.get('/classes', async (req, res) => {
       const result = await classesCollection.find().toArray()
@@ -156,7 +186,7 @@ async function run() {
 
     app.post('/myclass', async (req, res) => {
       const addClass = req.body;
-      console.log(addClass);
+      // console.log(addClass);
       const result = await myClassCollection.insertOne(addClass)
       res.send(result)
     })
