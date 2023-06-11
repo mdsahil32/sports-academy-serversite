@@ -59,7 +59,6 @@ async function run() {
       res.send({ token })
     })
 
-    // // Warning: use verifyJWT before using verifyAdmin
     const verifyAdmin = async (req, res, next) => {
       const email = req.decoded.email;
       const query = { email: email }
@@ -88,9 +87,7 @@ async function run() {
       res.send(result);
     });
 
-    // security layer: verifyJWT
-    // email same
-    // check admin
+   
     app.get('/users/admin/:email', verifyJWT, async (req, res) => {
       const email = req.params.email;
 
