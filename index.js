@@ -50,6 +50,7 @@ async function run() {
     const usersCollection = client.db('sportsAcademy').collection('users')
     const instructorsCollection = client.db('sportsAcademy').collection('instructors')
     const myClassCollection = client.db('sportsAcademy').collection('myClass')
+    const addClassCollection = client.db('sportsAcademy').collection('addClass')
     const paymentCollection = client.db('sportsAcademy').collection('payments')
 
     app.post('/jwt', (req, res) => {
@@ -176,7 +177,16 @@ async function run() {
       res.send(result)
     })
 
+    // add class -------
+    app.post('/addclass', async(req, res) =>{
+      const addClass = req.body;
+      const result = await addClassCollection.insertOne(addClass)
+      res.send(result)
+    })
 
+
+
+    // my class -------------
     app.get('/myclass/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
