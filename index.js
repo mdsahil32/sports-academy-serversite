@@ -183,8 +183,11 @@ async function run() {
       const result = await addClassCollection.insertOne(addClass)
       res.send(result)
     })
-
-
+    app.get('/addclass', async(req, res) =>{
+      const cursor = addClassCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
 
     // my class -------------
     app.get('/myclass/:id', async (req, res) => {
