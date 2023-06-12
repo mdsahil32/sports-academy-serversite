@@ -70,7 +70,7 @@ async function run() {
       next();
     }
 
-    // users related apis
+    // users related apis -----------
     app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
       const result = await usersCollection.find().toArray();
       res.send(result);
@@ -99,7 +99,7 @@ async function run() {
       const result = { admin: user?.role === 'admin' }
       res.send(result);
     })
-    // make admin 
+    // make admin ---------
     app.patch('/users/admin/:id', async (req, res) => {
       const id = req.params.id;
       // console.log(id);
@@ -112,7 +112,8 @@ async function run() {
       const result = await usersCollection.updateOne(filter, updateDoc);
       res.send(result);
     })
-    // make instructor 
+
+    // make instructor -----------
     app.get('/users/instructor/:email', verifyJWT, async (req, res) => {
       try {
         const { email } = req.params;
@@ -120,7 +121,6 @@ async function run() {
         if (req.decoded.email !== email) {
           return res.send({ instructor: false });
         }
-    
         const query = { email };
         const user = await usersCollection.findOne(query);
         const result = { instructor: user?.role === 'instructor' };
@@ -129,7 +129,7 @@ async function run() {
         res.status(500).send({ error: 'An error occurred while retrieving instructor information.' });
       }
     });
-    
+
     app.patch('/users/instructor/:id', async (req, res) => {
       try {
         const { id } = req.params;
@@ -140,7 +140,6 @@ async function run() {
             role: 'instructor',
           },
         };
-    
         const result = await usersCollection.updateOne(filter, updateDoc);
         res.send(result);
       } catch (error) {
@@ -232,9 +231,6 @@ async function run() {
       const deleteResult = await myClassCollection.deleteMany(query)
       res.send({ insertResult, deleteResult })
     })
-
-    
-
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
